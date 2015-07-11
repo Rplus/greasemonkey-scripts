@@ -77,6 +77,9 @@
     }
   };
 
+  $(function() {
+
+  // phzw init
   if (!phzw.length) {
     $(body).append('<a id="pixiv-hz-wrap" />');
     phzw = $('#pixiv-hz-wrap').css({
@@ -110,6 +113,7 @@
       phzwPull(this.href, true);
     });
 
+  });
   });
 
 })(window, document, jQuery, undefined);
