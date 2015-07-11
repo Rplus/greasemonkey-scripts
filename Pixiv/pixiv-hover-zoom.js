@@ -76,6 +76,7 @@
       'position': 'absolute',
       'display': 'none',
       'box-shadow': '0 0 5px',
+      'transition': 'all .3s',
       'z-index': '1000'
     });
   }
