@@ -43,13 +43,13 @@
     phzwToggle(true);
   };
 
-  var phzwPull = function(_url) {
+  var phzwPull = function(_url, _preload) {
     var _html;
     var _urlID = _url.match(phzwPattern).pop();
 
     if (phzwCache[_urlID]) {
       _html = phzwCache[_urlID];
-      phzwUpdate(_html, _url);
+      if (!_preload) { phzwUpdate(_html, _url); }
     } else {
       $.get(_url, function(data) {
         var _html;
@@ -63,7 +63,7 @@
         }
 
         phzwCache[_urlID] = _html;
-        phzwUpdate(_html, _url);
+        if (!_preload) { phzwUpdate(_html, _url); }
       });
     }
   };
