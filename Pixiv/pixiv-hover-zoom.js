@@ -18,6 +18,7 @@
   var phzwPos = [];
   var phzwPattern = /member_illust\.php\?mode=medium&illust_id=(\d+)/;
   var phzwURL;
+  var phzwOriginImg;
   var body = document.body;
 
   var phzwToggle = function(_switch) {
@@ -51,19 +52,16 @@
       phzwUpdate(_html, _url);
     } else {
       $.get(_url, function(data) {
-        var clonePage = $('<div />').append(data);
-        var _img = clonePage.find('.works_display img');
+        var _html;
+        if (phzwOriginImg && -1 !== data.indexOf('original-image')) {
+          // large image
+          _html = data.match(/_illust_modal.+?(<img.+?>)/).pop();
+          _html = _html.replace(/(alt=(".+?"))/, '$1 title=$2').replace(/data-src/, 'src');
+        } else {
+          _html = data.match(/works_display.+?(<img.+?>)/).pop();
+          _html = _html.replace(/(alt=(".+?"))/, '$1 title=$2');
+        }
 
-        // // big img
-        // var _oImg = clonePage.find('.original-image');
-        // _oImg.attr('src', _oImg.attr('data-src'));
-        // if (_oImg.attr('data-src')) {
-        //   _img = _oImg;
-        // }
-
-        _img.attr('title', _img[0].alt);
-
-        _html = _img[0].outerHTML;
         phzwCache[_urlID] = _html;
         phzwUpdate(_html, _url);
       });
