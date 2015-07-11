@@ -86,12 +86,12 @@
     phzwPull(_this.href);
   };
 
-  $('._unit').on('mouseenter', 'a.work', function() {
-    hoverEvent(this);
+  $('._unit').on('mouseenter.phzw', 'a', function() {
+    if ($(this).attr('href').match(phzwPattern)) {
+      hoverEvent(this);
+    }
   });
 
-  $('._unit').on('mouseenter', '.hoverZoomLink', function() {
-    hoverEvent(this);
   });
 
   $(document).on('click', function() {
