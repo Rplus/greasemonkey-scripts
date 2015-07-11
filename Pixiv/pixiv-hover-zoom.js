@@ -19,15 +19,16 @@
   var phzwURL;
 
   var phzwToggle = function(_switch) {
-
     if (_switch) {
-      phzw.fadeIn().css({
+      phzw.css({
         'top': phzwPos[0],
         'left': phzwPos[1],
         'transform': 'translateX(' + phzwPos[2] + '%)'
-      });
+      }).fadeIn();
     } else {
-      phzw.fadeOut();
+      if ('none' !== phzw[0].style.display) {
+        phzw.fadeOut();
+      }
     }
   };
 
