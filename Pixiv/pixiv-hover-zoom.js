@@ -50,9 +50,16 @@
       phzwUpdate(_html, _url);
     } else {
       $.get(_url, function(data) {
-        // _img.src = _img.src.replace('c/600x600/img-master', 'img-original').replace('_master1200', '');
         var clonePage = $('<div />').append(data);
         var _img = clonePage.find('.works_display img');
+
+        // // big img
+        // var _oImg = clonePage.find('.original-image');
+        // _oImg.attr('src', _oImg.attr('data-src'));
+        // if (_oImg.attr('data-src')) {
+        //   _img = _oImg;
+        // }
+
         _img.attr('title', _img[0].alt);
 
         _html = _img[0].outerHTML;
