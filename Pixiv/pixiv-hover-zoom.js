@@ -18,6 +18,7 @@
   var phzwPos = [];
   var phzwPattern = /member_illust\.php\?mode=medium&illust_id=(\d+)/;
   var phzwURL;
+  var body = document.body;
 
   var phzwToggle = function(_switch) {
     if (_switch) {
@@ -70,7 +71,7 @@
   };
 
   if (!phzw.length) {
-    $('body').append('<a id="pixiv-hz-wrap" />');
+    $(body).append('<a id="pixiv-hz-wrap" />');
     phzw = $('#pixiv-hz-wrap').css({
       'position': 'absolute',
       'display': 'none',
