@@ -81,9 +81,8 @@
   }
 
   var hoverEvent = function(_this) {
-    var bodyRect = document.body.getBoundingClientRect();
     var thisRect = _this.getBoundingClientRect();
-    phzwPos = [thisRect.top - bodyRect.top + thisRect.height, thisRect.left, -100 * thisRect.left  / bodyRect.width];
+    phzwPos = [thisRect.top + body.scrollTop + thisRect.height, thisRect.left, -100 * thisRect.left / body.scrollWidth];
     phzwPull(_this.href);
   };
 
