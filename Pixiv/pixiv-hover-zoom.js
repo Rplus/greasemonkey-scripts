@@ -115,6 +115,11 @@
     });
   }
 
+  // delay pre-load data in page
+  setTimeout(function() {
+    pullIdsData(getAllId());
+  }, 1000);
+
   $('._unit').on('mouseenter.phzw', 'a', function(e) {
     var _match = $(this).attr('href').match(phzwPattern);
 
