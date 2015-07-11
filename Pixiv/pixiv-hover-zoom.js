@@ -83,8 +83,9 @@
     });
   }
 
-  $('._unit').on('mouseenter.phzw', 'a', function() {
+  $('._unit').on('mouseenter.phzw', 'a', function(e) {
     if ($(this).attr('href').match(phzwPattern)) {
+      e.stopPropagation();
       var thisRect = this.getBoundingClientRect();
       phzwPos = [thisRect.top + body.scrollTop + thisRect.height, thisRect.left, -100 * thisRect.left / body.scrollWidth];
       phzwPull(this.href);
