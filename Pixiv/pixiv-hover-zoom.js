@@ -63,7 +63,11 @@
         }
 
         phzwCache[_urlID] = _html;
-        if (!_preload) { phzwUpdate(_html, _url); }
+        if (!_preload) {
+          phzwUpdate(_html, _url);
+        } else {
+          $('<div >').html(_html);
+        }
       });
     }
   };
@@ -90,6 +94,14 @@
   $(document).on('click.phzw', function() {
     phzwToggle(false);
   });
+
+  $('.link-item').eq(0).prepend('<button> ♥ preload all ♥ </button>').find('button').on('click', function(event) {
+    event.preventDefault();
+    $('._unit').find('a').filter(function() {
+      return $(this).attr('href').match(phzwPattern);
+    }).each(function() {
+      phzwPull(this.href, true);
+    });
 
   });
 
