@@ -3,7 +3,7 @@
 // ==UserScript==
 // @name         Pixiv hover zoom
 // @namespace    https://github.com/rplus
-// @version      1.0.2
+// @version      1.1.0
 // @description  hover zoom for Pixiv
 // @author       Rplus
 // @include      http://www.pixiv.net/*
@@ -20,6 +20,8 @@
   var phzwAPICache = {};
   var imgSize = 'm'; // size: '240mw', m', 'big'
   var body = document.body;
+  var isAutoLoadNextPage = true;
+  var pager = {};
 
   var phzwToggle = function(_switch) {
     if (_switch) {
@@ -147,6 +149,42 @@
     $(document).on('click.phzw', function() {
       phzwToggle(false);
     });
+
+    if (isAutoLoadNextPage) {
+      pager.container = $('.pager-container').eq(0);
+      pager.current = pager.container.find('li.current').text();
+      pager.baseHref = pager.container.find('a')[0].href.replace(/&p=\d+/, '');
+      pager.parent = $('._image-items').eq(0).parent();
+
+      var autoLoadNextPage = function() {
+        var nextPage = pager.current * 1 + 1;
+        var nextPageHref = pager.baseHref + '&p=' + nextPage;
+        var separator = '<hr style="border: 1px dashed #ccc" /><a href="' + nextPageHref + '">::: page: ' + nextPage + '</a>';
+
+        if (nextPage > pager.max) {
+          $(window).off('scroll.autoLoadNextPage');
+          return;
+        }
+
+        // prepare a div container for ajax lond next-page content
+        $('<div />').appendTo( pager.parent.append(separator) )
+          .load(nextPageHref + ' ._image-items', function(_html) {
+            pager.current = nextPage;
+            pager.loading = false;
+
+            // check for max page
+            var nextPagerLists = _html.match(/pager-container.+?(<ul .+?<\/ul>)/).pop();
+            pager.max = $(nextPagerLists).find('li').last().text() * 1;
+          });
+      };
+
+      $(window).on('scroll.autoLoadNextPage', function() {
+        if (!pager.loading && (pager.parent[0].getBoundingClientRect().bottom < document.documentElement.clientHeight * .3)) {
+          pager.loading = true;
+          autoLoadNextPage();
+        }
+      });
+    }
 
     $('.link-item').eq(0).prepend('<button>-♥ preload all ♥-</button>').find('button').on('click', function(e) {
       e.preventDefault();
