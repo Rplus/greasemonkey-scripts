@@ -50,9 +50,12 @@
       phzwUpdate(_html, _url);
     } else {
       $.get(_url, function(data) {
-        var _img = $('<div />').append(data).find('.works_display img')[0];
         // _img.src = _img.src.replace('c/600x600/img-master', 'img-original').replace('_master1200', '');
-        _html = _img.outerHTML;
+        var clonePage = $('<div />').append(data);
+        var _img = clonePage.find('.works_display img');
+        _img.attr('title', _img[0].alt);
+
+        _html = _img[0].outerHTML;
         phzwCache[_urlID] = _html;
         phzwUpdate(_html, _url);
       });
