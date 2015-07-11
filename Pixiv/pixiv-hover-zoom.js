@@ -16,6 +16,7 @@
   var phzw = $('#pixiv-hz-wrap');
   var phzwCache = {};
   var phzwPos = [];
+  var phzwPattern = /member_illust\.php\?mode=medium&illust_id=(\d+)/;
   var phzwURL;
 
   var phzwToggle = function(_switch) {
@@ -42,7 +43,7 @@
 
   var phzwPull = function(_url) {
     var _html;
-    var _urlID = _url.match(/id=(\d+)/).pop();
+    var _urlID = _url.match(phzwPattern).pop();
 
     if (phzwCache[_urlID]) {
       _html = phzwCache[_urlID];
