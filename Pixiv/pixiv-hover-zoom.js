@@ -92,10 +92,10 @@
     }
   });
 
+  $(document).on('click.phzw', function() {
+    phzwToggle(false);
   });
 
-  $(document).on('click', function() {
-    phzwToggle(false);
   });
 
 })(window, document, jQuery, undefined);
