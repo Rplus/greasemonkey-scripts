@@ -31,12 +31,11 @@
         'transform': 'translateX(' + phzwPos[2] + '%)'
       });
     } else {
-      if ('none' !== phzw[0].style.display) {
+      if ('0' !== phzw[0].style.opacity) {
         phzw.css({
           'visibility': 'hidden',
           'opacity': 0
         });
-        // phzw.fadeOut();
       }
     }
   };
