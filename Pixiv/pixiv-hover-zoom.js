@@ -3,7 +3,7 @@
 // ==UserScript==
 // @name         Pixiv hover zoom
 // @namespace    https://github.com/rplus
-// @version      0.5
+// @version      1.0
 // @description  hover zoom for Pixiv
 // @author       Rplus
 // @include      http://www.pixiv.net/*
@@ -14,11 +14,11 @@
   'use strict';
 
   var phzw = $('#pixiv-hz-wrap');
-  var phzwCache = {};
   var phzwPos = [];
   var phzwPattern = /member_illust\.php\?mode=medium&illust_id=(\d+)/;
-  var phzwURL;
-  var phzwOriginImg;
+  var phzwAPI = '//www.pixiv.net/rpc/index.php?mode=get_illust_detail_by_ids&illust_ids=';
+  var phzwAPICache = {};
+  var imgSize = 'm'; // size: '240mw', m', 'big'
   var body = document.body;
 
   var phzwToggle = function(_switch) {
@@ -40,48 +40,65 @@
     }
   };
 
-  var phzwUpdate = function(_html, _url) {
-    if (_url !== phzwURL) {
-      phzwURL = _url;
-      phzw.attr('href', _url).html(_html);
-    }
+  var getAllId = function() {
+    var ids = [];
+
+    $.each($('._unit').find('a'), function() {
+      var _href = $(this).attr('href');
+      var _match = _href && _href.match(phzwPattern);
+      if (_match) {
+        ids.push(_match.pop());
+      }
+    });
+
+    return ids;
+  };
+
+  var pullIdsData = function(idsArr) {
+    var deferred = $.Deferred();
+
+    $.getJSON(phzwAPI + idsArr.join())
+      .done(function(data) {
+
+        if (!data.error) {
+          for (var _item in data.body) {
+            if (data.body.hasOwnProperty(_item)) {
+              phzwAPICache[_item] = data.body[_item];
+            }
+          }
+          deferred.resolve(); //update state
+        } else {
+          deferred.reject();
+        }
+
+      })
+      .fail(function() {
+        deferred.reject();
+      });
+
+    return deferred.promise();
+  };
+
+  var render = function(_id) {
+    var data = phzwAPICache[_id];
+    if (!data) { return; }
+
+    var tpl = '<a href="/member_illust.php?mode=medium&illust_id=' + _id + '"><img src="' + data.url[imgSize] + '" title="' + data.illust_title + '"></a>';
+
+    phzw.html(tpl);
     phzwToggle(true);
   };
 
-  var phzwPull = function(_url, _preload) {
-    var _html;
-    var _urlID = _url.match(phzwPattern).pop();
-
-    if (phzwCache[_urlID]) {
-      _html = phzwCache[_urlID];
-      if (!_preload) { phzwUpdate(_html, _url); }
-    } else {
-      $.get(_url, function(data) {
-        var _html;
-        if (phzwOriginImg && -1 !== data.indexOf('original-image')) {
-          // large image
-          _html = data.match(/_illust_modal.+?(<img.+?>)/).pop();
-          _html = _html.replace(/(alt=(".+?"))/, '$1 title=$2').replace(/data-src/, 'src');
-        } else {
-          _html = data.match(/works_display.+?(<img.+?>)/).pop();
-          _html = _html.replace(/(alt=(".+?"))/, '$1 title=$2');
-        }
-
-        phzwCache[_urlID] = _html;
-        if (!_preload) {
-          phzwUpdate(_html, _url);
-        } else {
-          $('<div >').html(_html);
-        }
-      });
-    }
+  var updatePos = function(ele) {
+    var eleRect = ele.getBoundingClientRect();
+    phzwPos = [eleRect.top + body.scrollTop + eleRect.height, eleRect.left, -100 * eleRect.left / body.scrollWidth];
   };
 
   $(function() {
 
   // phzw init
   if (!phzw.length) {
-    $(body).append('<a id="pixiv-hz-wrap" />');
+    $(body).append('<div id="pixiv-hz-wrap" />');
     phzw = $('#pixiv-hz-wrap').css({
       'position': 'absolute',
       'visibility': 'hidden',
@@ -99,11 +116,22 @@
   }
 
   $('._unit').on('mouseenter.phzw', 'a', function(e) {
-    if ($(this).attr('href').match(phzwPattern)) {
-      e.stopPropagation();
-      var thisRect = this.getBoundingClientRect();
-      phzwPos = [thisRect.top + body.scrollTop + thisRect.height, thisRect.left, -100 * thisRect.left / body.scrollWidth];
-      phzwPull(this.href);
+    var _match = $(this).attr('href').match(phzwPattern);
+
+    if (!_match) { return; }
+
+    var _id = _match.pop();
+
+    e.stopPropagation();
+    updatePos(this);
+
+    if (phzwAPICache[_id]) {
+      render(_id);
+    } else {
+      $.when(pullIdsData([_id]))
+        .then(function() {
+          render(_id);
+        });
     }
   });
 
@@ -111,13 +139,16 @@
     phzwToggle(false);
   });
 
-  $('.link-item').eq(0).prepend('<button> ♥ preload all ♥ </button>').find('button').on('click', function(event) {
-    event.preventDefault();
-    $('._unit').find('a').filter(function() {
-      return $(this).attr('href').match(phzwPattern);
-    }).each(function() {
-      phzwPull(this.href, true);
-    });
+  $('.link-item').eq(0).prepend('<button>-♥ preload all ♥-</button>').find('button').on('click', function(e) {
+    e.preventDefault();
+
+    $.when(pullIdsData(getAllId()))
+      .then(function() {
+        $.each(phzwAPICache, function(key, val) {
+          // forcedly preload
+          $('<img src="' + val.url[imgSize] + '">');
+        });
+      });
 
   });
   });
