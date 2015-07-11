@@ -26,11 +26,17 @@
       phzw.css({
         'top': phzwPos[0],
         'left': phzwPos[1],
+        'opacity': 1,
+        'visibility': 'visible',
         'transform': 'translateX(' + phzwPos[2] + '%)'
-      }).fadeIn();
+      });
     } else {
       if ('none' !== phzw[0].style.display) {
-        phzw.fadeOut();
+        phzw.css({
+          'visibility': 'hidden',
+          'opacity': 0
+        });
+        // phzw.fadeOut();
       }
     }
   };
@@ -76,7 +82,8 @@
     $(body).append('<a id="pixiv-hz-wrap" />');
     phzw = $('#pixiv-hz-wrap').css({
       'position': 'absolute',
-      'display': 'none',
+      'visibility': 'hidden',
+      'opacity': 0,
       'box-shadow': '0 0 5px',
       'transition': 'all .3s',
       'z-index': '1000'
