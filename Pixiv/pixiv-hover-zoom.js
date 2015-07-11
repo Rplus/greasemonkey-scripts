@@ -3,7 +3,7 @@
 // ==UserScript==
 // @name         Pixiv hover zoom
 // @namespace    https://github.com/rplus
-// @version      1.0
+// @version      1.0.2
 // @description  hover zoom for Pixiv
 // @author       Rplus
 // @include      http://www.pixiv.net/*
