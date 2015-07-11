@@ -100,66 +100,66 @@
 
   $(function() {
 
-  // phzw init
-  if (!phzw.length) {
-    $(body).append('<div id="pixiv-hz-wrap" />');
-    phzw = $('#pixiv-hz-wrap').css({
-      'position': 'absolute',
-      'visibility': 'hidden',
-      'opacity': 0,
-      'box-shadow': '0 0 0 3px #fff, 0 0 3px 3px',
-      'transition': 'all .3s',
-      'z-index': '1000'
-    });
-
-    phzw.on('mouseenter', function() {
-      phzw.one('mouseleave', function() {
-        phzwToggle(false);
+    // phzw init
+    if (!phzw.length) {
+      $(body).append('<div id="pixiv-hz-wrap" />');
+      phzw = $('#pixiv-hz-wrap').css({
+        'position': 'absolute',
+        'visibility': 'hidden',
+        'opacity': 0,
+        'box-shadow': '0 0 0 3px #fff, 0 0 3px 3px',
+        'transition': 'all .3s',
+        'z-index': '1000'
       });
-    });
-  }
 
-  // delay pre-load data in page
-  setTimeout(function() {
-    pullIdsData(getAllId());
-  }, 1000);
-
-  $('._unit').on('mouseenter.phzw', 'a', function(e) {
-    var _match = $(this).attr('href').match(phzwPattern);
-
-    if (!_match) { return; }
-
-    var _id = _match.pop();
-
-    e.stopPropagation();
-    updatePos(this);
-
-    if (phzwAPICache[_id]) {
-      render(_id);
-    } else {
-      $.when(pullIdsData([_id]))
-        .then(function() {
-          render(_id);
+      phzw.on('mouseenter', function() {
+        phzw.one('mouseleave', function() {
+          phzwToggle(false);
         });
+      });
     }
-  });
 
-  $(document).on('click.phzw', function() {
-    phzwToggle(false);
-  });
+    // delay pre-load data in page
+    setTimeout(function() {
+      pullIdsData(getAllId());
+    }, 1000);
 
-  $('.link-item').eq(0).prepend('<button>-♥ preload all ♥-</button>').find('button').on('click', function(e) {
-    e.preventDefault();
+    $('._unit').on('mouseenter.phzw', 'a', function(e) {
+      var _match = $(this).attr('href').match(phzwPattern);
 
-    $.when(pullIdsData(getAllId()))
-      .then(function() {
-        $.each(phzwAPICache, function(key, val) {
-          // forcedly preload
-          $('<img src="' + val.url[imgSize] + '">');
+      if (!_match) { return; }
+
+      var _id = _match.pop();
+
+      e.stopPropagation();
+      updatePos(this);
+
+      if (phzwAPICache[_id]) {
+        render(_id);
+      } else {
+        $.when(pullIdsData([_id]))
+          .then(function() {
+            render(_id);
+          });
+      }
+    });
+
+    $(document).on('click.phzw', function() {
+      phzwToggle(false);
+    });
+
+    $('.link-item').eq(0).prepend('<button>-♥ preload all ♥-</button>').find('button').on('click', function(e) {
+      e.preventDefault();
+
+      $.when(pullIdsData(getAllId()))
+        .then(function() {
+          $.each(phzwAPICache, function(key, val) {
+            // forcedly preload
+            $('<img src="' + val.url[imgSize] + '">');
+          });
         });
-      });
 
-  });
+    });
   });
 
 })(window, document, jQuery, undefined);
