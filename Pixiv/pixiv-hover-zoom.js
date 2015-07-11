@@ -79,15 +79,11 @@
     });
   }
 
-  var hoverEvent = function(_this) {
-    var thisRect = _this.getBoundingClientRect();
-    phzwPos = [thisRect.top + body.scrollTop + thisRect.height, thisRect.left, -100 * thisRect.left / body.scrollWidth];
-    phzwPull(_this.href);
-  };
-
   $('._unit').on('mouseenter.phzw', 'a', function() {
     if ($(this).attr('href').match(phzwPattern)) {
-      hoverEvent(this);
+      var thisRect = this.getBoundingClientRect();
+      phzwPos = [thisRect.top + body.scrollTop + thisRect.height, thisRect.left, -100 * thisRect.left / body.scrollWidth];
+      phzwPull(this.href);
     }
   });
 
