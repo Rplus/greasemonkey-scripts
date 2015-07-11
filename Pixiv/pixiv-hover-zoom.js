@@ -83,9 +83,13 @@
     var data = phzwAPICache[_id];
     if (!data) { return; }
 
-    var tpl = '<a href="/member_illust.php?mode=medium&illust_id=' + _id + '"><img src="' + data.url[imgSize] + '" title="' + data.illust_title + '"></a>';
+    if (_id !== phzw.data('id')) {
+      var tpl = '<a href="/member_illust.php?mode=medium&illust_id=' + _id + '"><img src="' + data.url[imgSize] + '" title="' + data.illust_title + '"></a>';
+      phzw.html(tpl);
 
-    phzw.html(tpl);
+      phzw.data('id', _id);
+    }
+
     phzwToggle(true);
   };
 
