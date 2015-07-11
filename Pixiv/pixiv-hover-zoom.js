@@ -152,6 +152,9 @@
 
     if (isAutoLoadNextPage) {
       pager.container = $('.pager-container').eq(0);
+
+      if (!pager.container.length) { return; }
+
       pager.current = pager.container.find('li.current').text();
       pager.baseHref = pager.container.find('a')[0].href.replace(/&p=\d+/, '');
       pager.parent = $('._image-items').eq(0).parent();
