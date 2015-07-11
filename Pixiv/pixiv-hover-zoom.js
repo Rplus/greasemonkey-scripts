@@ -84,7 +84,7 @@
       'position': 'absolute',
       'visibility': 'hidden',
       'opacity': 0,
-      'box-shadow': '0 0 5px',
+      'box-shadow': '0 0 0 3px #fff, 0 0 3px 3px',
       'transition': 'all .3s',
       'z-index': '1000'
     });
