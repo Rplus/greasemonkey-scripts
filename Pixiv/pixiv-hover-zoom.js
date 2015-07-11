@@ -90,6 +90,12 @@
       'transition': 'all .3s',
       'z-index': '1000'
     });
+
+    phzw.on('mouseenter', function() {
+      phzw.one('mouseleave', function() {
+        phzwToggle(false);
+      });
+    });
   }
 
   $('._unit').on('mouseenter.phzw', 'a', function(e) {
