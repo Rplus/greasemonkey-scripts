@@ -3,7 +3,7 @@
 // ==UserScript==
 // @name         Pixiv hover zoom
 // @namespace    https://github.com/rplus
-// @version      1.1.0
+// @version      1.1.1
 // @description  hover zoom for Pixiv
 // @author       Rplus
 // @include      http://www.pixiv.net/*
@@ -45,7 +45,7 @@
   var getAllId = function() {
     var ids = [];
 
-    $.each($('._unit').find('a'), function() {
+    $.each($(document).find('a'), function() {
       var _href = $(this).attr('href');
       var _match = _href && _href.match(phzwPattern);
       if (_match) {
@@ -126,7 +126,7 @@
       pullIdsData(getAllId());
     }, 1000);
 
-    $('._unit').on('mouseenter.phzw', 'a', function(e) {
+    $(document).on('mouseenter.phzw', 'a', function(e) {
       var _match = $(this).attr('href').match(phzwPattern);
 
       if (!_match) { return; }
